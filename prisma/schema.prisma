@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model products {
+  id            String          @id @db.Char(26)
+  name          String          @db.VarChar(255)
+  price         Decimal         @db.Decimal(10, 2)
+  createdat     DateTime?       @default(now()) @db.Timestamp(6)
+  updatedat     DateTime?       @default(now()) @db.Timestamp(6)
+  salesproducts salesproducts[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model purchases {
+  id            String          @id @db.Char(26)
+  saleid        String          @db.Char(26)
+  supplierid    String          @db.Char(26)
+  nfenumber     String?         @db.VarChar(50)
+  totalprice    Decimal         @db.Decimal(10, 2)
+  status        String?         @default("pending") @db.VarChar(20)
+  createdat     DateTime?       @default(now()) @db.Timestamp(6)
+  updatedat     DateTime?       @default(now()) @db.Timestamp(6)
+  sales         sales           @relation(fields: [saleid], references: [id], onDelete: Cascade)
+  suppliers     suppliers       @relation(fields: [supplierid], references: [id], onDelete: NoAction)
+  salesproducts salesproducts[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model sales {
+  id            String          @id @db.Char(26)
+  customerid    String          @db.Char(26)
+  totalprice    Decimal         @db.Decimal(10, 2)
+  status        String?         @default("open") @db.VarChar(20)
+  createdat     DateTime?       @default(now()) @db.Timestamp(6)
+  updatedat     DateTime?       @default(now()) @db.Timestamp(6)
+  purchases     purchases[]
+  salesproducts salesproducts[]
+}
+
+model suppliers {
+  id          String      @id @db.Char(26)
+  name        String      @db.VarChar(255)
+  email       String?     @unique @db.VarChar(255)
+  phone       String?     @db.VarChar(20)
+  fulladdress String?
+  createdat   DateTime?   @default(now()) @db.Timestamp(6)
+  updatedat   DateTime?   @default(now()) @db.Timestamp(6)
+  purchases   purchases[]
+}
+
+model users {
+  id       String @id @db.Char(26)
+  name     String @db.VarChar(50)
+  email    String @unique @db.VarChar(255)
+  password String
+}
+
+model salesproducts {
+  id         String     @id @db.Char(26)
+  saleid     String     @db.Char(26)
+  purchaseid String?    @db.Char(26)
+  productid  String     @db.Char(26)
+  quantity   Int
+  totalprice Decimal    @db.Decimal(10, 2)
+  products   products   @relation(fields: [productid], references: [id], onDelete: Cascade)
+  purchases  purchases? @relation(fields: [purchaseid], references: [id])
+  sales      sales      @relation(fields: [saleid], references: [id], onDelete: Cascade)
+}

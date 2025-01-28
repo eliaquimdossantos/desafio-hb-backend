@@ -1,0 +1,54 @@
+CREATE TABLE public.users (
+    id CHAR(26) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE sales (
+    id CHAR(26) PRIMARY KEY,
+    customerId CHAR(26) NOT NULL REFERENCES public.users (id) ON UPDATE CASCADE,
+    totalPrice DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('open', 'completed', 'canceled')) DEFAULT 'open',
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE suppliers (
+    id CHAR(26) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    phone VARCHAR(20),
+    fullAddress TEXT,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE purchases (
+    id CHAR(26) PRIMARY KEY,
+    saleId CHAR(26) NOT NULL REFERENCES sales(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    supplierId CHAR(26) NOT NULL REFERENCES suppliers(id) ON UPDATE CASCADE,
+    nfeNumber VARCHAR(50), 
+    totalPrice DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('pending', 'received', 'canceled')) DEFAULT 'pending',
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE products (
+    id CHAR(26) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE salesProducts (
+    id CHAR(26) PRIMARY KEY,
+    saleId CHAR(26) NOT NULL REFERENCES sales(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    purchaseId CHAR(26) REFERENCES purchases(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    productId CHAR(26) NOT NULL REFERENCES products(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    quantity INT NOT NULL,
+    totalPrice DECIMAL(10, 2) NOT NULL
+);
