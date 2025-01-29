@@ -10,6 +10,9 @@ async function bootstrap() {
   const apiPrefix = 'api/v1';
   app.setGlobalPrefix(apiPrefix);
 
+  // Starts listening for shutdown hooks
+  app.enableShutdownHooks();
+
   await app.listen(process.env.PORT ?? 4000);
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
