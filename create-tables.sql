@@ -53,7 +53,3 @@ CREATE TABLE sales_products (
     quantity INT NOT NULL,
     total_price DECIMAL(10, 2)
 );
-
-ALTER TABLE IF EXISTS public.sales_products
-    ADD UNIQUE (sale_id)
-    INCLUDE (product_id);

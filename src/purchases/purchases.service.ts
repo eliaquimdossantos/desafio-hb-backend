@@ -12,12 +12,15 @@ export class PurchasesService {
 
   findAll() {
     return this.prismaService.purchases.findMany({
-      include: { sales: true },
+      include: { sales: true, suppliers: true },
     });
   }
 
   findOne(id: string) {
     return this.prismaService.purchases.findUnique({
+      include: {
+        suppliers: true,
+      },
       where: { id },
     });
   }
