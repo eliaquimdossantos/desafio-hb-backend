@@ -63,7 +63,7 @@ Rodar o servidor em modo desenvolvimento:
 npm run start:dev
 ```
 
-- O servidor estará disponível em http://1270.0.0.1/api/v1
+- O servidor estará disponível em http://127.0.0.1/api/v1
 
 ### 🚀 Produção
 Rodar o servidor em produção:
@@ -72,4 +72,4 @@ npm run build
 npm run start:prod
 ```
 
-- O servidor estará disponível em http://1270.0.0.1/api/v1
+- O servidor estará disponível em http://127.0.0.1/api/v1
