@@ -1,8 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+import { PrismaExceptionFilter } from 'src/common/filters/prisma-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalFilters(new PrismaExceptionFilter());
+  const apiPrefix = 'api/v1';
+  app.setGlobalPrefix(apiPrefix);
+
+  // Enable CORS to avoid errors during tests
+  app.enableCors();
+
+  // Starts listening for shutdown hooks
+  app.enableShutdownHooks();
+
+  await app.listen(process.env.PORT ?? 4000);
 }
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();
