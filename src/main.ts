@@ -10,6 +10,9 @@ async function bootstrap() {
   const apiPrefix = 'api/v1';
   app.setGlobalPrefix(apiPrefix);
 
+  // Enable CORS to avoid errors during tests
+  app.enableCors();
+
   // Starts listening for shutdown hooks
   app.enableShutdownHooks();
 

@@ -24,10 +24,7 @@ export class SuppliersService {
   update(id: string, updateSupplierDto: UpdateSupplierDto) {
     return this.prismaService.suppliers.update({
       where: { id },
-      data: {
-        updated_at: new Date(),
-        ...updateSupplierDto,
-      },
+      data: updateSupplierDto,
     });
   }
 

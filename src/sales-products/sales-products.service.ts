@@ -1,16 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSalesProductDto } from './dto/create-sales-product.dto';
 import { UpdateSalesProductDto } from './dto/update-sales-product.dto';
 import { PrismaService } from 'prisma/prisma.service';
+import { ProductsService } from 'src/products/products.service';
 
 @Injectable()
 export class SalesProductsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly productService: ProductsService,
+  ) {}
 
-  create(createSalesProductDto: CreateSalesProductDto) {
-    return this.prismaService.sales_products.create({
-      data: createSalesProductDto,
-    });
+  async create(createSalesProductDto: CreateSalesProductDto) {
+    const product = await this.productService.findOne(
+      createSalesProductDto.product_id,
+    );
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const total_price = Number(product.price) * createSalesProductDto.quantity;
+
+    const existingSalesProducts =
+      await this.prismaService.sales_products.findUnique({
+        where: {
+          sale_id_product_id: {
+            sale_id: createSalesProductDto.sale_id,
+            product_id: createSalesProductDto.product_id,
+          },
+        },
+      });
+
+    const data = {
+      total_price,
+      ...createSalesProductDto,
+    };
+
+    if (existingSalesProducts) {
+      return this.update(existingSalesProducts.id, data);
+    } else {
+      return this.prismaService.sales_products.create({ data });
+    }
   }
 
   findAll() {
