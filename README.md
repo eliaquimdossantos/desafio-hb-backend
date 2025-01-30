@@ -23,7 +23,28 @@ DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco"
 ```
 
 ### 🔄 Executando Migrações
-Você pode utilizar o script **create-tables.sql** presente na raíz do projeto
+## 🛠️ Banco de Dados com Prisma
+
+### 🔄 Migration
+
+Para executar as migrations e atualizar o banco de dados, use o seguinte comando:
+
+```sh
+npx prisma migrate dev
+```
+
+Este comando cria ou atualiza as tabelas do banco de dados conforme o esquema definido no arquivo `schema.prisma`.
+
+### 🌱 Seed
+
+Para popular o banco de dados com dados iniciais, você pode rodar o comando de seed:
+
+```sh
+npx prisma db seed
+```
+
+Este comando irá executar o script de seed configurado no arquivo `prisma/seed.ts` para inserir dados padrão no banco.
+
 
 Gerar o cliente Prisma:
 ```sh
@@ -42,9 +63,13 @@ Rodar o servidor em modo desenvolvimento:
 npm run start:dev
 ```
 
+- O servidor estará disponível em http://1270.0.0.1/api/v1
+
 ### 🚀 Produção
 Rodar o servidor em produção:
 ```sh
 npm run build
 npm run start:prod
 ```
+
+- O servidor estará disponível em http://1270.0.0.1/api/v1
