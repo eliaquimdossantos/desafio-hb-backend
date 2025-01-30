@@ -1,6 +1,6 @@
 # Projeto NestJS com Prisma
 
-![Diagrama ERD](./img/ERD.png)
+![Diagrama ERD](/img/ERD.png)
 
 ## 📜 Sobre o Projeto
 Este projeto utiliza **NestJS** (utilizando **Typescript**) como framework backend e **Prisma ORM** para gerenciamento do banco de dados.
